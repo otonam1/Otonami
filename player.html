@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Otonami  // player</title>
+<title>otonami // player</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -11,16 +11,22 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --bg: #0d0d0d;
-    --bg-2: #141414;
-    --bg-3: #1a1a1a;
-    --fg: #e8e6e3;
-    --fg-dim: #6b6b6b;
-    --fg-mid: #a0a0a0;
-    --accent: #c8b48a;
-    --line: #2a2a2a;
-    --line-bright: #3a3a3a;
-    --danger: #a85050;
+    --bg:          #12071a;
+    --bg-2:        #1a0b26;
+    --bg-3:        #0d0412;
+    --fg:          #f0a8d8;   /* розовый неон */
+    --fg-bright:   #ffd6f0;
+    --fg-soft:     #c084fc;   /* фиолетовый */
+    --fg-dim:      #8a5c8a;
+    --fg-mid:      #b880b8;
+    --pink:        #ff5fa2;
+    --purple:      #c084fc;
+    --purple-deep: #7c3aed;
+    --purple-soft: #a855f7;
+    --violet:      #d8b4fe;
+    --line:        #2a1440;
+    --line-bright: #3d1f5c;
+    --danger:      #ff5f7a;
   }
 
   html, body {
@@ -37,9 +43,20 @@
     position: fixed;
     inset: 0;
     background-image:
-      repeating-linear-gradient(0deg, rgba(255,255,255,0.008) 0px, rgba(255,255,255,0.008) 1px, transparent 1px, transparent 3px);
+      repeating-linear-gradient(0deg, rgba(240,168,216,0.01) 0px, rgba(240,168,216,0.01) 1px, transparent 1px, transparent 3px);
     pointer-events: none;
     z-index: 9999;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(255,95,162,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 30%, rgba(192,132,252,0.06) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
   }
 
   #canvas {
@@ -66,7 +83,7 @@
     text-transform: uppercase;
     color: var(--fg-dim);
     border-bottom: 1px solid var(--line);
-    background: rgba(13,13,13,0.85);
+    background: rgba(18,7,26,0.85);
     backdrop-filter: blur(8px);
     z-index: 10;
   }
@@ -74,14 +91,15 @@
     display: inline-block;
     width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--fg-dim);
+    background: var(--pink);
+    box-shadow: 0 0 10px var(--pink);
     margin-right: 8px;
     vertical-align: middle;
-    transition: background 0.4s;
+    animation: dotPulse 2.4s ease-in-out infinite;
   }
-  .topbar .dot.active {
-    background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
+  @keyframes dotPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--pink); }
+    50%      { opacity: 0.5; box-shadow: 0 0 3px var(--pink); }
   }
   .topbar-left, .topbar-right { display: flex; align-items: center; gap: 16px; }
   .topbar .sep { color: var(--line-bright); }
@@ -98,7 +116,7 @@
     transition: color 0.15s;
   }
   .topbar-right button:hover { color: var(--fg); }
-  .topbar-right button.active { color: var(--accent); }
+  .topbar-right button.active { color: var(--pink); }
 
   /* ─── центральная зона ─── */
   .center {
@@ -122,7 +140,8 @@
     font-size: clamp(15px, 1.6vw, 20px);
     font-weight: 500;
     letter-spacing: 0.02em;
-    color: var(--fg);
+    color: var(--fg-bright);
+    text-shadow: 0 0 20px rgba(255,95,162,0.4);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -167,7 +186,7 @@
     display: flex;
     gap: 0;
     border: 1px solid var(--line);
-    background: rgba(13,13,13,0.7);
+    background: rgba(18,7,26,0.7);
     backdrop-filter: blur(6px);
   }
   .viz-switcher button {
@@ -186,13 +205,13 @@
   .viz-switcher button:last-child { border-right: none; }
   .viz-switcher button:hover { color: var(--fg-mid); }
   .viz-switcher button.active {
-    color: var(--accent);
-    background: rgba(200,180,138,0.06);
+    color: var(--pink);
+    background: rgba(255,95,162,0.08);
+    text-shadow: 0 0 8px rgba(255,95,162,0.6);
   }
 
-  /* кнопка палитры */
   .palette-btn {
-    background: rgba(13,13,13,0.7);
+    background: rgba(18,7,26,0.7);
     border: 1px solid var(--line);
     color: var(--fg-dim);
     font-family: inherit;
@@ -208,11 +227,8 @@
     transition: all 0.15s;
   }
   .palette-btn:hover { color: var(--fg); border-color: var(--line-bright); }
-  .palette-btn.open { color: var(--accent); border-color: var(--accent); }
-  .palette-btn .swatch-pair {
-    display: flex;
-    gap: 1px;
-  }
+  .palette-btn.open { color: var(--pink); border-color: var(--pink); box-shadow: 0 0 12px rgba(255,95,162,0.3); }
+  .palette-btn .swatch-pair { display: flex; gap: 1px; }
   .palette-btn .swatch-pair span {
     width: 8px; height: 8px;
     display: inline-block;
@@ -226,7 +242,7 @@
     left: 50%;
     transform: translateX(-50%) translateY(-8px);
     z-index: 7;
-    background: rgba(13,13,13,0.96);
+    background: rgba(18,7,26,0.96);
     backdrop-filter: blur(12px);
     border: 1px solid var(--line-bright);
     padding: 14px;
@@ -235,7 +251,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 24px rgba(255,95,162,0.15);
   }
   .palette-panel.open {
     opacity: 1;
@@ -272,13 +288,11 @@
     background: rgba(255,255,255,0.04);
   }
   .preset-btn.active {
-    border-color: var(--accent);
-    background: rgba(200,180,138,0.06);
+    border-color: var(--pink);
+    background: rgba(255,95,162,0.08);
+    box-shadow: 0 0 12px rgba(255,95,162,0.25);
   }
-  .preset-btn .preset-swatches {
-    display: flex;
-    gap: 2px;
-  }
+  .preset-btn .preset-swatches { display: flex; gap: 2px; }
   .preset-btn .preset-swatches span {
     width: 14px; height: 14px;
     display: inline-block;
@@ -290,7 +304,7 @@
     text-transform: uppercase;
     color: var(--fg-dim);
   }
-  .preset-btn.active .preset-name { color: var(--accent); }
+  .preset-btn.active .preset-name { color: var(--pink); }
 
   .palette-custom {
     display: grid;
@@ -299,11 +313,7 @@
     padding-top: 12px;
     border-top: 1px solid var(--line);
   }
-  .color-picker-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+  .color-picker-wrap { display: flex; flex-direction: column; gap: 6px; }
   .color-picker-wrap label {
     font-size: 9px;
     letter-spacing: 0.15em;
@@ -322,8 +332,7 @@
   .color-picker-input-wrap input[type="color"] {
     -webkit-appearance: none;
     appearance: none;
-    width: 26px;
-    height: 26px;
+    width: 26px; height: 26px;
     border: none;
     padding: 0;
     background: transparent;
@@ -339,7 +348,6 @@
     letter-spacing: 0.05em;
     text-transform: uppercase;
   }
-
   .palette-reset {
     margin-top: 12px;
     width: 100%;
@@ -356,7 +364,7 @@
   }
   .palette-reset:hover { border-color: var(--danger); color: var(--danger); }
 
-  /* ─── боковая панель плейлистов ─── */
+  /* ─── боковая панель ─── */
   .playlist-panel {
     position: fixed;
     top: 32px;
@@ -364,7 +372,7 @@
     bottom: 0;
     width: 360px;
     max-width: 92vw;
-    background: rgba(13,13,13,0.96);
+    background: rgba(18,7,26,0.96);
     backdrop-filter: blur(12px);
     border-left: 1px solid var(--line);
     z-index: 8;
@@ -430,24 +438,19 @@
   }
   .pl-tab:hover { border-color: var(--line-bright); color: var(--fg); }
   .pl-tab.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(200,180,138,0.05);
+    border-color: var(--pink);
+    color: var(--pink);
+    background: rgba(255,95,162,0.08);
+    box-shadow: 0 0 8px rgba(255,95,162,0.2);
   }
-  .pl-tab .pl-count {
-    font-size: 9px;
-    color: var(--fg-dim);
-    opacity: 0.7;
-  }
-  .pl-tab.active .pl-count { color: var(--accent); opacity: 0.8; }
-
+  .pl-tab .pl-count { font-size: 9px; color: var(--fg-dim); opacity: 0.7; }
+  .pl-tab.active .pl-count { color: var(--pink); opacity: 0.8; }
   .pl-tab.new-pl {
     border-style: dashed;
     padding: 6px 10px;
     color: var(--fg-dim);
   }
-  .pl-tab.new-pl:hover { color: var(--accent); border-color: var(--accent); }
-
+  .pl-tab.new-pl:hover { color: var(--pink); border-color: var(--pink); }
   .pl-tab .pl-x {
     font-size: 12px;
     color: var(--danger);
@@ -483,8 +486,9 @@
   .track-item:hover { background: var(--bg-2); color: var(--fg); }
   .track-item.active {
     background: var(--bg-3);
-    color: var(--accent);
-    border-left-color: var(--accent);
+    color: var(--pink);
+    border-left-color: var(--pink);
+    box-shadow: inset 0 0 12px rgba(255,95,162,0.08);
   }
   .track-item .idx {
     font-size: 10px;
@@ -492,7 +496,7 @@
     min-width: 22px;
     font-variant-numeric: tabular-nums;
   }
-  .track-item.active .idx { color: var(--accent); }
+  .track-item.active .idx { color: var(--pink); }
   .track-item .name {
     flex: 1;
     white-space: nowrap;
@@ -508,7 +512,7 @@
     gap: 6px;
     align-items: center;
   }
-  .track-item .meta .plays { color: var(--accent); opacity: 0.6; }
+  .track-item .meta .plays { color: var(--purple); opacity: 0.7; }
   .track-item .duration {
     font-size: 10px;
     color: var(--fg-dim);
@@ -543,7 +547,7 @@
     bottom: 0; left: 0; right: 0;
     z-index: 10;
     border-top: 1px solid var(--line);
-    background: rgba(13,13,13,0.88);
+    background: rgba(18,7,26,0.88);
     backdrop-filter: blur(10px);
     padding: 14px 22px 18px;
     transition: transform 0.35s ease, opacity 0.35s;
@@ -576,7 +580,8 @@
     top: 0; left: 0;
     height: 100%;
     width: 0%;
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--pink), var(--purple-soft));
+    box-shadow: 0 0 8px rgba(255,95,162,0.6);
     transition: width 0.08s linear;
   }
   .progress-knob {
@@ -585,7 +590,8 @@
     left: 0%;
     width: 8px; height: 8px;
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--pink);
+    box-shadow: 0 0 8px var(--pink);
     transform: translate(-50%, -50%) scale(0);
     transition: transform 0.15s;
   }
@@ -616,16 +622,17 @@
     letter-spacing: 0.05em;
   }
   .ctrl-btn:hover { color: var(--fg); background: var(--bg-2); }
-  .ctrl-btn.active { color: var(--accent); }
+  .ctrl-btn.active { color: var(--pink); text-shadow: 0 0 8px rgba(255,95,162,0.6); }
   .ctrl-btn.play {
     color: var(--bg);
-    background: var(--fg);
+    background: linear-gradient(135deg, var(--pink), var(--purple-soft));
     padding: 8px 18px;
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.12em;
+    box-shadow: 0 0 12px rgba(255,95,162,0.4);
   }
-  .ctrl-btn.play:hover { background: var(--accent); }
+  .ctrl-btn.play:hover { box-shadow: 0 0 20px rgba(255,95,162,0.7); }
 
   .extras-group {
     display: flex;
@@ -650,7 +657,12 @@
     min-width: 44px;
   }
   .speed-btn:hover { border-color: var(--line-bright); color: var(--fg); }
-  .speed-btn.active { border-color: var(--accent); color: var(--accent); }
+  .speed-btn.active {
+    border-color: var(--purple);
+    color: var(--purple);
+    background: rgba(192,132,252,0.08);
+    box-shadow: 0 0 8px rgba(192,132,252,0.25);
+  }
   .shuffle-btn {
     background: transparent;
     border: 1px solid var(--line);
@@ -666,9 +678,10 @@
   }
   .shuffle-btn:hover { border-color: var(--line-bright); color: var(--fg); }
   .shuffle-btn.active {
-    border-color: var(--accent);
-    color: var(--accent);
-    background: rgba(200,180,138,0.06);
+    border-color: var(--purple);
+    color: var(--purple);
+    background: rgba(192,132,252,0.08);
+    box-shadow: 0 0 8px rgba(192,132,252,0.25);
   }
 
   .volume-group {
@@ -693,16 +706,17 @@
     appearance: none;
     width: 9px; height: 9px;
     border-radius: 50%;
-    background: var(--fg-mid);
+    background: var(--pink);
     cursor: pointer;
+    box-shadow: 0 0 6px var(--pink);
     transition: background 0.15s;
   }
-  #volume::-webkit-slider-thumb:hover { background: var(--accent); }
+  #volume::-webkit-slider-thumb:hover { background: var(--fg-bright); }
   #volume::-moz-range-thumb {
     width: 9px; height: 9px;
     border: none;
     border-radius: 50%;
-    background: var(--fg-mid);
+    background: var(--pink);
     cursor: pointer;
   }
 
@@ -720,8 +734,9 @@
     transition: all 0.15s;
   }
   .load-btn:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--pink);
+    color: var(--pink);
+    box-shadow: 0 0 12px rgba(255,95,162,0.3);
   }
   #file-input { display: none; }
 
@@ -777,6 +792,7 @@
     padding: 22px;
     width: 340px;
     max-width: 90vw;
+    box-shadow: 0 0 32px rgba(255,95,162,0.2);
   }
   .modal h3 {
     font-size: 11px;
@@ -798,7 +814,7 @@
     margin-bottom: 16px;
     letter-spacing: 0.02em;
   }
-  .modal input:focus { border-color: var(--accent); }
+  .modal input:focus { border-color: var(--pink); box-shadow: 0 0 8px rgba(255,95,162,0.3); }
   .modal-actions {
     display: flex;
     gap: 8px;
@@ -818,29 +834,28 @@
   }
   .modal-actions button:hover { border-color: var(--fg-mid); color: var(--fg); }
   .modal-actions button.primary {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--pink);
+    color: var(--pink);
   }
   .modal-actions button.primary:hover {
-    background: var(--accent);
+    background: var(--pink);
     color: var(--bg);
+    box-shadow: 0 0 16px rgba(255,95,162,0.5);
   }
 
-  /* ═══════════════════════════════════════
-     МИНИ-ПЛЕЕР
-     ═══════════════════════════════════════ */
+  /* ─── МИНИ-ПЛЕЕР ─── */
   .mini-player {
     position: fixed;
     bottom: 90px;
     right: 20px;
     width: 260px;
-    background: rgba(13,13,13,0.96);
+    background: rgba(18,7,26,0.96);
     backdrop-filter: blur(12px);
     border: 1px solid var(--line-bright);
     z-index: 50;
     display: none;
     flex-direction: column;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(255,95,162,0.15);
   }
   .mini-player.show { display: flex; }
   .mini-player.dragging { opacity: 0.9; }
@@ -869,14 +884,12 @@
     padding: 2px 4px;
     transition: color 0.15s;
   }
-  .mini-head button:hover { color: var(--fg); }
+  .mini-head button:hover { color: var(--pink); }
 
-  .mini-body {
-    padding: 10px 12px 12px;
-  }
+  .mini-body { padding: 10px 12px 12px; }
   .mini-track-title {
     font-size: 11.5px;
-    color: var(--fg);
+    color: var(--fg-bright);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -903,7 +916,8 @@
     position: absolute;
     top: 0; left: 0;
     height: 100%;
-    background: var(--accent);
+    background: linear-gradient(90deg, var(--pink), var(--purple-soft));
+    box-shadow: 0 0 6px rgba(255,95,162,0.5);
     width: 0%;
   }
   .mini-controls {
@@ -935,14 +949,15 @@
   }
   .mini-controls button:hover { color: var(--fg); background: var(--bg-2); }
   .mini-controls button.mini-play {
-    background: var(--fg);
+    background: linear-gradient(135deg, var(--pink), var(--purple-soft));
     color: var(--bg);
     padding: 4px 12px;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.1em;
+    box-shadow: 0 0 10px rgba(255,95,162,0.4);
   }
-  .mini-controls button.mini-play:hover { background: var(--accent); }
+  .mini-controls button.mini-play:hover { box-shadow: 0 0 16px rgba(255,95,162,0.7); }
 
   @media (max-width: 600px) {
     .playlist-panel { width: 100%; }
@@ -959,7 +974,7 @@
 
 <div class="topbar">
   <div class="topbar-left">
-    <span><span class="dot" id="status-dot"></span>Otonami</span>
+    <span><span class="dot" id="status-dot"></span>otonami</span>
     <span class="sep">/</span>
     <span id="status-text">idle</span>
   </div>
@@ -973,7 +988,6 @@
   </div>
 </div>
 
-<!-- селектор визуализатора + палитра -->
 <div class="viz-bar">
   <div class="viz-switcher" id="viz-switcher">
     <button data-mode="wave" class="active">wave</button>
@@ -983,13 +997,12 @@
   </div>
   <button class="palette-btn" id="palette-btn" title="Цвета визуализатора">
     <span class="swatch-pair" id="swatch-preview">
-      <span style="background:#e8e6e3"></span><span style="background:#c8b48a"></span>
+      <span style="background:#ffd6f0"></span><span style="background:#c084fc"></span>
     </span>
     clr
   </button>
 </div>
 
-<!-- панель палитры -->
 <div class="palette-panel" id="palette-panel">
   <div class="palette-section-title">Пресеты</div>
   <div class="palette-presets" id="palette-presets"></div>
@@ -998,15 +1011,15 @@
     <div class="color-picker-wrap">
       <label>Основной</label>
       <div class="color-picker-input-wrap">
-        <input type="color" id="color-primary" value="#e8e6e3">
-        <span class="hex" id="hex-primary">E8E6E3</span>
+        <input type="color" id="color-primary" value="#ffd6f0">
+        <span class="hex" id="hex-primary">FFD6F0</span>
       </div>
     </div>
     <div class="color-picker-wrap">
       <label>Акцент</label>
       <div class="color-picker-input-wrap">
-        <input type="color" id="color-accent" value="#c8b48a">
-        <span class="hex" id="hex-accent">C8B48A</span>
+        <input type="color" id="color-accent" value="#c084fc">
+        <span class="hex" id="hex-accent">C084FC</span>
       </div>
     </div>
   </div>
@@ -1163,7 +1176,6 @@ const modalCreate   = document.getElementById('modal-create');
 
 const vizSwitcher = document.getElementById('viz-switcher');
 
-// палитра
 const paletteBtn      = document.getElementById('palette-btn');
 const palettePanel    = document.getElementById('palette-panel');
 const palettePresets  = document.getElementById('palette-presets');
@@ -1174,7 +1186,6 @@ const hexPrimary      = document.getElementById('hex-primary');
 const hexAccent       = document.getElementById('hex-accent');
 const swatchPreview   = document.getElementById('swatch-preview');
 
-// mini player
 const btnMini        = document.getElementById('btn-mini');
 const miniPlayer     = document.getElementById('mini-player');
 const miniHead       = document.getElementById('mini-head');
@@ -1189,15 +1200,15 @@ const miniPrev       = document.getElementById('mini-prev');
 const miniNext       = document.getElementById('mini-next');
 
 /* ═══════════════════════════════════════════════════════
-   ПРЕСЕТЫ ПАЛИТРЫ
+   ПРЕСЕТЫ ПАЛИТРЫ — GTA 6 / Vice City
    ═══════════════════════════════════════════════════════ */
 const PALETTE_PRESETS = [
-  { name: 'Default',  primary: '#e8e6e3', accent: '#c8b48a' },
-  { name: 'Amber',    primary: '#ffc069', accent: '#ff7b00' },
-  { name: 'Mono',     primary: '#ffffff', accent: '#888888' },
-  { name: 'Cyan',     primary: '#8fe3f0', accent: '#3aa8c8' },
-  { name: 'Magenta',  primary: '#ff9ed8', accent: '#c74aa2' },
-  { name: 'Green',    primary: '#a8e6a1', accent: '#4a9e56' }
+  { name: 'Vice',     primary: '#ffd6f0', accent: '#c084fc' },  // розовый + фиолетовый (default)
+  { name: 'Sunset',   primary: '#ffb088', accent: '#ff5fa2' },  // закат: оранж + розовый
+  { name: 'Miami',    primary: '#ff8fd0', accent: '#a855f7' },  // насыщенный розово-пурпурный
+  { name: 'Neon',     primary: '#d8b4fe', accent: '#ff5fa2' },  // лаванда + розовый неон
+  { name: 'Ocean',    primary: '#ff9ed8', accent: '#7c3aed' },  // розовый + глубокий фиолет
+  { name: 'Synth',    primary: '#ff5fa2', accent: '#c084fc' }   // инверсия Vice
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -1216,11 +1227,10 @@ let playOrder = [];
 let playOrderIndex = -1;
 let playbackRate = 1;
 
-// палитра визуализатора
 let vizColors = {
-  primary: '#e8e6e3',   // белый — основная волна
-  accent:  '#c8b48a',   // золото — отражение, акценты
-  presetName: 'Default' // имя текущего пресета (или 'Custom')
+  primary: '#ffd6f0',
+  accent:  '#c084fc',
+  presetName: 'Vice'
 };
 
 let uiState = {
@@ -1251,7 +1261,6 @@ function findTrackIndex(id) {
   return activeTracks().findIndex(t => t.id === id);
 }
 
-// hex → [r,g,b]
 function hexToRgb(hex) {
   hex = hex.replace('#', '');
   if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
@@ -1261,7 +1270,6 @@ function hexToRgb(hex) {
     parseInt(hex.slice(4, 6), 16)
   ];
 }
-// rgba helper
 function rgbaStr(hex, alpha) {
   const [r, g, b] = hexToRgb(hex);
   return `rgba(${r},${g},${b},${alpha})`;
@@ -1323,7 +1331,7 @@ function loadState() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   ПАЛИТРА — UI
+   ПАЛИТРА UI
    ═══════════════════════════════════════════════════════ */
 function buildPalettePresets() {
   palettePresets.innerHTML = '';
@@ -1355,16 +1363,13 @@ function buildPalettePresets() {
 }
 
 function applyPaletteUI() {
-  // пресеты — активность
   palettePresets.querySelectorAll('.preset-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.name === vizColors.presetName);
   });
-  // color inputs
   colorPrimary.value = vizColors.primary;
   colorAccent.value  = vizColors.accent;
   hexPrimary.textContent = vizColors.primary.replace('#', '').toUpperCase();
   hexAccent.textContent  = vizColors.accent.replace('#', '').toUpperCase();
-  // превью
   swatchPreview.innerHTML = '';
   const s1 = document.createElement('span');
   s1.style.background = vizColors.primary;
@@ -1403,7 +1408,6 @@ paletteBtn.addEventListener('click', e => {
   paletteBtn.classList.toggle('open', open);
 });
 
-// закрытие панели при клике вне
 document.addEventListener('click', e => {
   if (!palettePanel.classList.contains('open')) return;
   if (palettePanel.contains(e.target)) return;
@@ -2109,11 +2113,19 @@ function draw() {
   const cx = Math.floor(W / 2);
   const cy = Math.floor(H / 2);
 
-  ctx.fillStyle = '#0d0d0d';
+  /* фон */
+  ctx.fillStyle = '#12071a';
   ctx.fillRect(0, 0, W, H);
 
+  /* лёгкий закатный градиент снизу */
+  const sunset = ctx.createLinearGradient(0, H, 0, H * 0.65);
+  sunset.addColorStop(0, 'rgba(255,95,162,0.06)');
+  sunset.addColorStop(1, 'transparent');
+  ctx.fillStyle = sunset;
+  ctx.fillRect(0, H * 0.65, W, H * 0.35);
+
   if (vizMode === 'wave') {
-    ctx.fillStyle = '#1a1a1a';
+    ctx.fillStyle = '#2a1440';
     for (let x = 0; x < W; x += 6) {
       ctx.fillRect(x, cy, 3, 1);
     }
@@ -2154,7 +2166,9 @@ function drawWave(cx, cy, W) {
 
   const PX = 2;
 
-  // верхняя волна — primary
+  /* верхняя волна — primary + свечение */
+  ctx.shadowBlur = 6;
+  ctx.shadowColor = P;
   for (let i = 0; i < N; i++) {
     const t = i / (N - 1);
     const edge = Math.sin(t * Math.PI);
@@ -2171,7 +2185,10 @@ function drawWave(cx, cy, W) {
     ctx.fillRect(x - (x % PX), y - PX, PX, PX);
   }
 
-  // нижняя (зеркальная) волна — accent
+  /* нижняя зеркальная — accent с градиентом */
+  const accRgb = hexToRgb(A);
+  const accDeep = [Math.max(0, accRgb[0] - 60), Math.max(0, accRgb[1] - 60), Math.max(0, accRgb[2] - 40)];
+  ctx.shadowColor = A;
   for (let i = 0; i < N; i++) {
     const t = i / (N - 1);
     const edge = Math.sin(t * Math.PI);
@@ -2179,14 +2196,19 @@ function drawWave(cx, cy, W) {
     const x = Math.floor(cx - halfW + t * width);
     const dist = Math.abs(yOff);
     for (let py = 0; py < dist; py += PX) {
+      const depth = dist > 0 ? py / dist : 0;
       const alpha = 1 - py / (amplitude + 1);
-      ctx.fillStyle = rgbaStr(A, 0.1 + alpha * 0.4);
+      const rr = Math.round(accRgb[0] + (accDeep[0] - accRgb[0]) * depth);
+      const gg = Math.round(accRgb[1] + (accDeep[1] - accRgb[1]) * depth);
+      const bb = Math.round(accRgb[2] + (accDeep[2] - accRgb[2]) * depth);
+      ctx.fillStyle = `rgba(${rr},${gg},${bb},${0.12 + alpha * 0.55})`;
       ctx.fillRect(x - (x % PX), cy + py + PX, PX, PX);
     }
   }
+  ctx.shadowBlur = 0;
 
-  // тики
-  ctx.fillStyle = 'rgba(107,107,107,0.6)';
+  /* тики */
+  ctx.fillStyle = 'rgba(138,92,138,0.6)';
   const ticks = 24;
   for (let i = 0; i <= ticks; i++) {
     const x = Math.floor(cx - halfW + (i / ticks) * width);
@@ -2195,9 +2217,10 @@ function drawWave(cx, cy, W) {
     ctx.fillRect(x - (x % PX), cy - len, PX, len * 2);
   }
 
-  // маркеры краёв — accent
-  ctx.fillStyle = A;
+  /* маркеры краёв */
+  ctx.fillStyle = P;
   ctx.fillRect(cx - halfW - 4, cy - 2, 2, 4);
+  ctx.fillStyle = A;
   ctx.fillRect(cx + halfW + 2, cy - 2, 2, 4);
 }
 
@@ -2205,6 +2228,8 @@ function drawWave(cx, cy, W) {
 function drawSpectrum(cx, cy, W, H) {
   const P = vizColors.primary;
   const A = vizColors.accent;
+  const accRgb = hexToRgb(A);
+  const accDeep = [Math.max(0, accRgb[0] - 60), Math.max(0, accRgb[1] - 60), Math.max(0, accRgb[2] - 40)];
 
   const bars = 64;
   const step = Math.floor(freqData.length / bars / 2);
@@ -2214,6 +2239,9 @@ function drawSpectrum(cx, cy, W, H) {
   const startX = Math.floor(cx - totalW / 2);
   const PX = 2;
 
+  ctx.shadowBlur = 5;
+  ctx.shadowColor = P;
+
   for (let i = 0; i < bars; i++) {
     let sum = 0;
     for (let j = 0; j < step; j++) sum += freqData[i * step + j];
@@ -2221,19 +2249,28 @@ function drawSpectrum(cx, cy, W, H) {
     const h = Math.floor(v * maxH);
     const x = startX + i * barW;
 
+    /* верхняя часть — primary */
+    ctx.shadowColor = P;
     for (let py = 0; py < h; py += PX) {
       const a = 1 - py / (maxH + 1);
       ctx.fillStyle = rgbaStr(P, 0.25 + a * 0.75);
       ctx.fillRect(x, cy - py - PX, barW - 2, PX);
     }
+    /* нижняя — accent с градиентом */
+    ctx.shadowColor = A;
     for (let py = 0; py < h; py += PX) {
+      const depth = h > 0 ? py / h : 0;
       const a = 1 - py / (maxH + 1);
-      ctx.fillStyle = rgbaStr(A, 0.08 + a * 0.35);
+      const rr = Math.round(accRgb[0] + (accDeep[0] - accRgb[0]) * depth);
+      const gg = Math.round(accRgb[1] + (accDeep[1] - accRgb[1]) * depth);
+      const bb = Math.round(accRgb[2] + (accDeep[2] - accRgb[2]) * depth);
+      ctx.fillStyle = `rgba(${rr},${gg},${bb},${0.1 + a * 0.45})`;
       ctx.fillRect(x, cy + py + PX, barW - 2, PX);
     }
   }
+  ctx.shadowBlur = 0;
 
-  ctx.fillStyle = '#2a2a2a';
+  ctx.fillStyle = '#2a1440';
   ctx.fillRect(0, cy, W, 1);
 }
 
@@ -2249,6 +2286,9 @@ function drawRadial(cx, cy, W, H) {
   const PX = 2;
   const maxLen = Math.floor(Math.min(W, H) * 0.18);
 
+  ctx.shadowBlur = 5;
+  ctx.shadowColor = P;
+
   for (let i = 0; i < bars; i++) {
     let sum = 0;
     for (let j = 0; j < step; j++) sum += freqData[i * step + j];
@@ -2258,13 +2298,22 @@ function drawRadial(cx, cy, W, H) {
 
     for (let d = 0; d < len; d += PX) {
       const a = 1 - d / (maxLen + 1);
+      /* ближе к центру — primary, дальше — accent */
+      const mix = d / (maxLen + 1);
+      const pRgb = hexToRgb(P);
+      const aRgb = hexToRgb(A);
+      const rr = Math.round(pRgb[0] + (aRgb[0] - pRgb[0]) * mix);
+      const gg = Math.round(pRgb[1] + (aRgb[1] - pRgb[1]) * mix);
+      const bb = Math.round(pRgb[2] + (aRgb[2] - pRgb[2]) * mix);
       const x = Math.floor(cx + Math.cos(angle) * (baseR + d));
       const y = Math.floor(cy + Math.sin(angle) * (baseR + d));
-      ctx.fillStyle = rgbaStr(P, 0.2 + a * 0.8);
+      ctx.fillStyle = `rgba(${rr},${gg},${bb},${0.2 + a * 0.8})`;
       ctx.fillRect(x - (x % PX), y - (y % PX), PX, PX);
     }
   }
 
+  /* пульсирующее кольцо — accent */
+  ctx.shadowColor = A;
   const pulseR = baseR + Math.floor(bass * 0.15);
   for (let angle = 0; angle < Math.PI * 2; angle += 0.02) {
     const x = Math.floor(cx + Math.cos(angle) * pulseR);
@@ -2273,6 +2322,7 @@ function drawRadial(cx, cy, W, H) {
     ctx.fillStyle = rgbaStr(A, 0.4 + a * 0.6);
     ctx.fillRect(x - (x % PX), y - (y % PX), PX, PX);
   }
+  ctx.shadowBlur = 0;
 }
 
 /* ── PARTICLES ── */
@@ -2298,6 +2348,7 @@ function drawParticles(cx, cy, W, H) {
     }
   }
 
+  ctx.shadowBlur = 4;
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i];
     p.x += p.vx;
@@ -2309,19 +2360,23 @@ function drawParticles(cx, cy, W, H) {
     const x = Math.floor(p.x);
     const y = Math.floor(p.y);
     const alpha = p.life;
+    ctx.shadowColor = p.color;
     ctx.fillStyle = rgbaStr(p.color, p.color === A ? alpha * 0.9 : alpha);
     ctx.fillRect(x - (x % PX), y - (y % PX), PX, PX);
   }
 
+  /* центр — пульсирующая точка accent */
+  ctx.shadowColor = A;
   const pr = Math.floor(3 + bass * 0.08);
   for (let dx = -pr; dx <= pr; dx += PX) {
     for (let dy = -pr; dy <= pr; dy += PX) {
       if (dx * dx + dy * dy <= pr * pr) {
-        ctx.fillStyle = rgbaStr(A, 0.8);
+        ctx.fillStyle = rgbaStr(A, 0.85);
         ctx.fillRect(cx + dx - ((cx + dx) % PX), cy + dy - ((cy + dy) % PX), PX, PX);
       }
     }
   }
+  ctx.shadowBlur = 0;
 }
 
 function drawIdle(cx, cy, W) {
@@ -2336,18 +2391,20 @@ function drawIdle(cx, cy, W) {
     const edge = Math.sin(t * Math.PI);
     const yOff = Math.round(Math.sin(t * 14 + idlePhase) * 4 * edge);
     const x = Math.floor(cx - halfW + t * width);
-    ctx.fillStyle = `rgba(107,107,107,${0.3 + Math.abs(yOff) * 0.1})`;
+    ctx.fillStyle = `rgba(138,92,138,${0.3 + Math.abs(yOff) * 0.1})`;
     ctx.fillRect(x - (x % PX), cy + yOff - PX, PX, PX);
   }
-  ctx.fillStyle = rgbaStr(A, 0.8);
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = A;
+  ctx.fillStyle = rgbaStr(A, 0.85);
   ctx.fillRect(cx - 1, cy - 1, 2, 2);
+  ctx.shadowBlur = 0;
 }
 
 /* ═══════════════════════════════════════════════════════
    ИНИЦИАЛИЗАЦИЯ
    ═══════════════════════════════════════════════════════ */
 (async function init() {
-  // строим пресеты палитры сразу
   buildPalettePresets();
 
   try {
@@ -2425,7 +2482,6 @@ function drawIdle(cx, cy, W) {
       miniPlayer.style.bottom = 'auto';
     }
 
-    // применяем сохранённую палитру
     buildPalettePresets();
     applyPaletteUI();
 
